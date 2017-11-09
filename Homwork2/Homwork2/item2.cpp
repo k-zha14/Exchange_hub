@@ -1,15 +1,15 @@
 #include <iostream>
 
 using namespace std;
-struct point
+struct ppoint
 {
 	int x,y;
 };
 
-int crossMulti(point a, point b, point c){
+int crossMulti(ppoint a, ppoint b, ppoint c){
     return (a.x-c.x)*(b.y-c.y)-(b.x-c.x)*(a.y-c.y);
 }
-int distance(point a, point b){
+int dis(ppoint a, ppoint b){
     return (a.x-b.x)^2 + (a.y-b.y)^2;
 }
 int main(){
@@ -17,7 +17,7 @@ int main(){
 	//accelerate inputing
 	setvbuf(stdin, new char[1 << 20], _IOFBF, 1<<20);
 	scanf("%d",&n);
-	point* glist = new point[n];
+	ppoint* glist = new ppoint[n];
 	for(int i=0;i<n;i++) {
         scanf("%d %d", &glist[i].x, &glist[i].y);
     }
@@ -26,7 +26,7 @@ int main(){
         if((glist[i].y<glist[k].y)||(glist[i].y==glist[k].y&&glist[i].x<glist[k].x))
             k=i;
     }
-    point temp = glist[0];
+    ppoint temp = glist[0];
     glist[0] = glist[k];
     glist[k] = temp;
     //list by the angle
@@ -34,7 +34,7 @@ int main(){
         k=j;    //set the initial point
         for(int m = j+1; m < n; m++){
             if((crossMulti(glist[m],glist[k],glist[0])>0)||((crossMulti(glist[m],glist[k],glist[0])==0
-            &&(distance(glist[k],glist[0]) < distance(glist[m],glist[0]))))){
+            &&(dis(glist[k],glist[0]) < dis(glist[m],glist[0]))))){
                 k=m;    //dozen points in the same line
             }
         }
@@ -43,7 +43,7 @@ int main(){
         glist[j] = temp;
     }
     //initial pop in
-    point* s = new point[n];
+    ppoint* s = new ppoint[n];
     int top = 0;
     for(int i = 0; i < 3; i++){
         s[top] = glist[i];

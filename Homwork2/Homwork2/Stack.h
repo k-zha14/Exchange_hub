@@ -6,8 +6,7 @@ private:
 public:
 	Stack(int m=100){
 		length = m;
-		val = new T[m+1];
-		val[0] = 0;
+		val = new T[m];
 		_top = 0;
 	}
 	~Stack(){
@@ -33,7 +32,7 @@ public:
 			return val[i];
 		}
 		else
-			return 0;
+			return NULL;
 	}
 	T top(){
 		return val[_top];

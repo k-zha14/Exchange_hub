@@ -6,26 +6,91 @@ using namespace std;
 struct node
 {
 	int elem;
-	int* left;
-	int* right;
+	node* left;
+	node* right;
 };
 
-void binaryTreeOrdering(int* pre,int* post,int length){
-	if(length == 1){
-		printf("%d\n",pre[0]);
-		return;
-	}
-	int index =0 ;
-	for(;index<length;index++){
-		if(pre[index] == *(post+length-2))
+struct binTree
+{
+	node* data;
+	int* pre;
+	int* post;
+	int len;
+};
+
+node* rebuildTree(int *pre, int *post, int leng){
+	//build root node
+	binTree* stack = new binTree[leng];
+	int top = 0;
+	binTree r,rtemp;
+	r.pre = pre;
+	r.post = post;
+	r.data = new node;
+	node* root = r.data;
+	r.len = leng;
+	stack[top++] = r;
+	//go to the loop
+	while (top>0)
+	{
+		r = stack[--top];
+		r.data->elem = r.pre[0];
+		int index =0 ;
+		for(;index<r.len;index++){
+		if(r.pre[index] == *(r.post+r.len-2))
 			break;
+		}
+		//left
+		if(index == 2) {
+			r.data->left = new node;
+			r.data->left->elem = r.pre[1];
+			r.data->left->left = NULL;
+			r.data->left->right = NULL;
+		}
+		else
+		{
+			rtemp.len = index-1;
+			rtemp.pre = r.pre+1;
+			rtemp.post = r.post;
+			rtemp.data = new node;
+			r.data->left = rtemp.data;
+			stack[top++] = rtemp;
+		}
+
+		if((r.len-index)==1){
+			r.data->right = new node;
+			r.data->right->elem = r.pre[index];
+			r.data->right->left = NULL;
+			r.data->right->right = NULL;
+		}
+		else
+		{
+			rtemp.len = r.len-index;
+			rtemp.pre = r.pre+index;
+			rtemp.post = r.post+index-1;
+			r.data->right = rtemp.data;
+			stack[top++] = rtemp;
+		}
+	
 	}
-	//left
-	binaryTreeOrdering(pre+1,post,index-1);
-	//output
-	printf("%d\n",pre[0]);
-	//right
-	binaryTreeOrdering(pre+index,post+index-1,length-index);
+	return root;
+}
+
+void printInTree(node* root,int n){
+	node* p = root;
+	Stack<node*> s(n);
+	while (!s.isEmpty()||p)
+	{
+		while (p)
+		{
+			s.push(p);
+			p = p->left;
+		}
+		if(!s.isEmpty()){
+			p = s.pop();
+			printf("%d\n",p->elem);
+			p = p->right;
+		}
+	}
 }
 
 int main(){
@@ -40,12 +105,7 @@ int main(){
 	for(int i = 0; i<n ; i++){
 		scanf("%d", &post[i]);
 	}
-	//recursion, maybe not a good idea
-	Stack<node> tree;
-	while (!tree.isEmpty())
-	{
-
-	}
+	node* root = rebuildTree(pre,post,n);
+	printInTree(root,n);
 	system("pause");
-
 }
