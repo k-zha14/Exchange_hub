@@ -59,4 +59,5 @@ int main(){
         temp = s[i];
         printf("%d  %d\n",temp.x,temp.y);
     }
+    system("pause");
 }
