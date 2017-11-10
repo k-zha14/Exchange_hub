@@ -1,23 +1,22 @@
 #include <iostream>
-#include "Stack.h"
 
 using namespace std;
 
 struct node
 {
 	int elem;
-	node* left;
-	node* right;
+	node *left;
+	node *right;
 };
 
 struct binTree
 {
-	node* data;
-	int* pre;
-	int* post;
+	node *data;
+	int *pre;
+	int *post;
 	int len;
 };
-
+//rebuild the tree
 node* rebuildTree(int *pre, int *post, int leng){
 	//build root node
 	binTree* stack = new binTree[leng];
@@ -74,20 +73,21 @@ node* rebuildTree(int *pre, int *post, int leng){
 	}
 	return root;
 }
-
+//mid-traversal without recursion
 void printInTree(node* root,int n){
 	node* p = root;
-	Stack<node*> s(n);
-	while (!s.isEmpty()||p)
+	node** stack = new node*[n];
+	int top = 0;
+	while (!(top == 0)||p)
 	{
 		while (p)
 		{
-			s.push(p);
+			stack[top++] = p;
 			p = p->left;
 		}
-		if(!s.isEmpty()){
-			p = s.pop();
-			printf("%d\n",p->elem);
+		if(!(top == 0)){
+			p = stack[--top];
+			printf("%d ",p->elem);
 			p = p->right;
 		}
 	}
@@ -100,7 +100,7 @@ int main(){
 	int *pre = new int[n];
 	int *post = new int[n];
 	for(int i = 0; i<n ; i++){
-		scanf("%d",&pre[i]);
+		scanf("%d", &pre[i]);
 	}
 	for(int i = 0; i<n ; i++){
 		scanf("%d", &post[i]);
@@ -108,4 +108,5 @@ int main(){
 	node* root = rebuildTree(pre,post,n);
 	printInTree(root,n);
 	system("pause");
+	return 0;
 }
