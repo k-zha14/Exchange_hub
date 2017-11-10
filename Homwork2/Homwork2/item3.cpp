@@ -33,6 +33,12 @@ node* rebuildTree(int *pre, int *post, int leng){
 	{
 		r = stack[--top];
 		r.data->elem = r.pre[0];
+		//special
+		if(r.len == 1){
+			r.data->left = NULL;
+			r.data->right = NULL;
+			break;
+		}
 		int index =0 ;
 		for(;index<r.len;index++){
 		if(r.pre[index] == *(r.post+r.len-2))
@@ -66,6 +72,7 @@ node* rebuildTree(int *pre, int *post, int leng){
 			rtemp.len = r.len-index;
 			rtemp.pre = r.pre+index;
 			rtemp.post = r.post+index-1;
+			rtemp.data = new node;
 			r.data->right = rtemp.data;
 			stack[top++] = rtemp;
 		}
