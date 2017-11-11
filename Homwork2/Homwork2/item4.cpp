@@ -1,70 +1,66 @@
 #include <iostream>
-#include "List.h"
-#include <cstring>
-
 using namespace std;
-
-struct doublevalue
+//define structure vector
+struct Myvector
 {
-	int a,b;
+	int x,y;
 };
-
-int main(){
-	int n,max=0;
-	List<int> a;
-	List<doublevalue> ashadow;
-	scanf("%d", &n);
-	char code[2];
-	for(int i=0;i<n;i++){
-		scanf("%s", &code);
-		switch (code[0])
+//
+int crossv(Myvector a, Myvector b){	
+	if ((a.x*b.y - b.x*a.y)>0)
+	{
+		return 1;
+	} else
+		return 0;
+}
+//output the zone of node
+int* zone(Myvector *line, Myvector *node, int n, int m){
+	int hi=n-1, mi, lo=0;
+	int *out = new int[m];
+	Myvector temp;
+	for(int i =0; i<m; i++){
+		while (lo < hi)
 		{
-		case 'E':
-			{
-			int temp;
-			scanf("%d",&temp);
-			a.PushFront(temp);
-			if(i==0){
-				doublevalue point;
-				point.a = temp;
-				point.b = 1;
-				ashadow.PushFront(point);
-			}
-			else{
-				doublevalue point;
-				point.a = temp;
-				point.b = 1;
-				doublevalue top = ashadow.front();
-				while ((point.a >= top.a)&&(ashadow.size()>0))
-				{
-					ashadow.PopFront();
-					point.b +=top.b;
-					top = ashadow.front();
-				}
-				ashadow.PushFront(point);
-			}
-			break;
-			}
-		case 'D':
-			{
-			int backup = a.PopBack();
-			doublevalue top2 = ashadow.PopBack();
-			if(top2.b>1){
-				top2.b--;
-				ashadow.PushBack(top2);
-			}
-			printf("%d\n",backup);
-			break;
-			}
-		case 'M':
-			{
-			doublevalue top3 = ashadow.PopBack();
-			printf("%d\n",top3.a);
-			ashadow.PushBack(top3);
-			break;
-			}
+			mi = (hi + lo) >> 1;
+			//calculate the node vector
+			temp.x = node[i].x;
+			temp.y = line[mi].y + node[i].y;
+			crossv(temp, line[mi]) ? hi = mi : lo = mi+1;
 		}
-
+		out[i] = lo; 
 	}
-	//system("pause");
+	return out;
+}
+//main function
+int main(){
+	//accelerate inputing
+	setvbuf(stdin, new char[1 << 20], _IOFBF, 1<<20);
+	//input setting nums
+	int n, m;
+	scanf("%d %d", &n, &m);
+	//initialize basical space
+	Myvector *line = new Myvector[n];
+	Myvector *node = new Myvector[m];
+	int *out = new int[m];
+	for (int i = 0; i < n; i++)
+	{
+		int x,y;
+		scanf("%d %d", &x, &y);
+		line[i].x = x;
+		line[i].y = -y;
+	}
+	for (int i = 0; i < m; i++)
+	{
+		int x,y;
+		scanf("%d %d", &x, &y);
+		node[i].x = x;
+		node[i].y = y;
+	}
+	out = zone(line,node,n,m);
+	//output
+	for (int i = 0; i < m; i++)
+	{
+		cout << out[i] << endl;
+	}
+	system("pause");
 }
